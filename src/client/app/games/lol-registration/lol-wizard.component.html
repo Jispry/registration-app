@@ -1,0 +1,7 @@
+<h1>LoL Wizard Component</h1>
+<ul class="nav nav-pills">
+  <li role="presentation" routerLinkActive="active"><a [routerLink]="teamRoute">Team</a></li>
+  <li role="presentation" routerLinkActive="active"><a [routerLink]="[{ outlets: { 'form-wizzard': 'player'} }]">Player</a></li>
+  <li role="presentation" routerLinkActive="active" [ngClass]="{'active': false}"><a target="_self">Summary</a></li>
+</ul>
+<router-outlet name="form-wizzard"></router-outlet>

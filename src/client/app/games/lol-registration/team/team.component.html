@@ -1,0 +1,10 @@
+<p>
+  team works!
+</p>
+<form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+  <base-bootstrap-basic-control [label]="'Team name:'" [labelFor]="'teamNameId'" [errorMessage]="formErrors.name" [refFormControl]='teamForm.controls["name"]'>
+    <input type="text" class="form-control" id="teamNameId" name="name" formControlName="name" />
+  </base-bootstrap-basic-control>
+</form>
+{{teamForm.valid}}
+<button class="btn btn-primary" (click)="nextStep()" [disabled]="!teamForm.valid">Next</button>
