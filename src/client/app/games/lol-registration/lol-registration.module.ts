@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { BaseRegistrationModule } from '../base/base-registration.module';
 import { LolWizardComponent } from './lol-wizard.component';
@@ -21,6 +22,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         RouterModule.forChild(appRoutes),
+        NgbModule,
         BaseRegistrationModule
     ],
     exports: [LolWizardComponent],

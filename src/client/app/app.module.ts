@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule, Routes } from '@angular/router';
 
-import { AlertModule } from 'ng2-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { GamesModule } from './games/games.module'
@@ -23,8 +23,7 @@ const appRoutes: Routes = [
     FormsModule,
     HttpModule,
     RouterModule.forRoot(appRoutes),
-
-    AlertModule.forRoot(),
+    NgbModule.forRoot(),
     GamesModule
   ],
   providers: [],

@@ -1,9 +1,6 @@
-<div class="form-group has-feedback" [ngClass]="{'has-error' : hasError(),
+<div class="form-group has-feedback" [ngClass]="{'has-danger' : hasError(),
                 'has-success' : hasSuccess() }">
-  <label class="control-label" for="{{labelFor}}">{{label}}</label>
+  <label class="form-control-label" for="{{labelFor}}">{{label}}</label>
   <ng-content></ng-content>
-  <span class="glyphicon form-control-feedback" aria-hidden="true" [ngClass]="{
-      'glyphicon-remove' : hasError(),
-      'glyphicon-ok' : hasSuccess() }"></span>
-  <span *ngIf="errorMessage" class="help-block">{{ errorMessage }}</span>
+  <div *ngIf="hasError()" class="form-control-feedback">{{errorMessage}}</div>
 </div>

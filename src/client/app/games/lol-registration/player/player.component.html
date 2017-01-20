@@ -2,16 +2,19 @@
   player works!
 </p>
 <form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
-  <base-bootstrap-basic-control [label]="'First name:'" [labelFor]="'firstNameId'" [errorMessage]="formErrors.firstName" [refFormControl]="playerForm.controls['firstName']">
+  <base-bootstrap-basic-control [label]="'First name:'" [labelFor]="'firstNameId'" [errorMessage]="formErrors.firstName">
     <input type="text" class="form-control" id="firstNameId" name="firstName" formControlName="firstName" />
   </base-bootstrap-basic-control>
 
-  <base-bootstrap-basic-control [label]="'Last name:'" [labelFor]="'lastNameId'" [errorMessage]="formErrors.lastName" [refFormControl]="playerForm.controls['lastName']">
+  <base-bootstrap-basic-control [label]="'Last name:'" [labelFor]="'lastNameId'" [errorMessage]="formErrors.lastName">
     <input type="text" class="form-control" id="lastNameId" name="last-name" formControlName="lastName" />
   </base-bootstrap-basic-control>
 
   <!-- change to DATE-->
-  <base-bootstrap-basic-control [label]="'Birth date:'" [labelFor]="'birstDateId'" [errorMessage]="formErrors.birthDate" [refFormControl]="playerForm.controls['birtDate']">
-    <input type="text" class="form-control" id="birstDateId" name="birtDate" formControlName="birthDate" />
+  <base-bootstrap-basic-control [label]="'Birth date:'" [labelFor]="'birstDateId'" [errorMessage]="formErrors.birthDate">
+    <input type="text" class="form-control" id="birstDateId" name="birtDate" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker"/>
+    <div class="input-group-addon" (click)="d.toggle()" >
+        <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+      </div>
   </base-bootstrap-basic-control>
 </form>

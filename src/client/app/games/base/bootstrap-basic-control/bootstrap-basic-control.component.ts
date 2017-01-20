@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ContentChild } from '@angular/core';
+import { Component, OnInit, OnChanges, DoCheck, Input, ContentChild, ElementRef } from '@angular/core';
 import { FormControl, FormControlDirective, FormControlName } from '@angular/forms';
 
 @Component({
@@ -6,7 +6,10 @@ import { FormControl, FormControlDirective, FormControlName } from '@angular/for
   templateUrl: './bootstrap-basic-control.component.html',
   styleUrls: ['./bootstrap-basic-control.component.css']
 })
-export class BootstrapBasicControlComponent implements OnInit {
+export class BootstrapBasicControlComponent implements OnInit, DoCheck {
+
+  private readonly formControlSuccess = 'form-control-success';
+  private readonly formControlDanger = 'form-control-danger';
 
   @Input()
   errorMessage: string;
@@ -17,16 +20,21 @@ export class BootstrapBasicControlComponent implements OnInit {
   @Input()
   labelFor: string;
 
-  @Input()
-  refFormControl: FormControl
+  /*@Input()
+  refFormControl: FormControl*/
 
-  /* TODO Fake FormControlName
+  //TODO Fake FormControlName
   @ContentChild(FormControlName)
-  controlName: FormControlName*/
+  controlName: FormControlName;
 
-  constructor() { }
+  constructor(private myElement: ElementRef) { }
 
   ngOnInit() {
+    this.updateControlCssClasses();
+  }
+
+  ngDoCheck() {
+    this.updateControlCssClasses();
   }
 
   hasError(): boolean {
@@ -34,8 +42,22 @@ export class BootstrapBasicControlComponent implements OnInit {
   }
 
   hasSuccess(): boolean {
-    //eturn this.controlName && this.controlName.dirty && this.controlName.valid;
-    return this.refFormControl && this.refFormControl.dirty && this.refFormControl.valid;
+    return this.controlName && this.controlName.dirty && this.controlName.valid;
+    //return this.refFormControl && this.refFormControl.dirty && this.refFormControl.valid;
+  }
+
+  private updateControlCssClasses() {
+    const htmlElement = <HTMLInputElement>this.myElement.nativeElement.querySelector("input");
+    if (!htmlElement) { return; }
+    // remove classes before evaluation
+    htmlElement.classList.remove(this.formControlSuccess);
+    htmlElement.classList.remove(this.formControlDanger);
+    
+    if (this.hasSuccess()) {
+      htmlElement.classList.add(this.formControlSuccess);
+    } else if (this.hasError()) {
+      htmlElement.classList.add(this.formControlDanger);
+    }
   }
 
 }

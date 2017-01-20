@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement, NO_ERRORS_SCHEMA } from '@angular/core';
+import { DebugElement, NO_ERRORS_SCHEMA, Directive } from '@angular/core';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 
 import { PlayerComponent } from './player.component';
@@ -11,6 +11,13 @@ class FakeRegistrationInformationService {
   getTeam() {
     return { name: 'TeamName' };
   }
+}
+
+@Directive({
+  selector: '[ngbDatepicker]',
+  exportAs: 'ngbDatepicker'
+})
+class FakeNgbDatepickerDirective {
 }
 
 describe('PlayerComponent', () => {
@@ -32,14 +39,14 @@ describe('PlayerComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
-      declarations: [PlayerComponent],
-      schemas: [NO_ERRORS_SCHEMA]
+      declarations: [PlayerComponent, FakeNgbDatepickerDirective],
+      schemas: [NO_ERRORS_SCHEMA],
     })
       .overrideComponent(PlayerComponent, {
         set: {
           providers: [
             { provide: RegistrationInformationService, useValue: registrationServiceStub }
-          ]
+          ],
         }
       })
       .compileComponents();
@@ -96,7 +103,7 @@ describe('PlayerComponent', () => {
 
     function checkFormRequired(controlKey: string) {
       component.playerForm.controls[controlKey].setValue(undefined);
-      
+
       expect(component.playerForm.controls[controlKey].hasError('required')).toBe(true, 'should have "required" error');
       expect(component.playerForm.valid).toBe(false, 'form.valid shoudl be false');
     }

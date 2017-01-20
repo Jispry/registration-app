@@ -3,9 +3,6 @@ import { TestBed,async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { RouterTestingModule } from '@angular/router/testing';
 
-// TODO mock the component
-import { AlertModule } from 'ng2-bootstrap';
-
 describe('AppComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -14,7 +11,6 @@ describe('AppComponent', () => {
       ],
       imports: [
         RouterTestingModule,
-        AlertModule.forRoot()
       ]
     });
     TestBed.compileComponents();
