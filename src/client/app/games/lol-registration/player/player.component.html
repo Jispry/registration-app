@@ -12,9 +12,11 @@
 
   <!-- change to DATE-->
   <base-bootstrap-basic-control [label]="'Birth date:'" [labelFor]="'birstDateId'" [errorMessage]="formErrors.birthDate">
-    <input type="text" class="form-control" id="birstDateId" name="birtDate" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker"/>
-    <div class="input-group-addon" (click)="d.toggle()" >
-        <img src="img/calendar-icon.svg" style="width: 1.2rem; height: 1rem; cursor: pointer;"/>
+    <div class="input-group">
+      <input type="text" class="form-control" id="birstDateId" name="birtDate" formControlName="birthDate" ngbDatepicker #d="ngbDatepicker"/>
+      <div class="input-group-addon" (click)="d.toggle()">
+        <i class="fa fa-calendar" aria-hidden="true"></i>
       </div>
+    </div>
   </base-bootstrap-basic-control>
 </form>
