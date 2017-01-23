@@ -1,19 +1,35 @@
 /* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement, Directive, Component, ViewChild } from '@angular/core';
+import { DebugElement, Directive, Component, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormControlName, ReactiveFormsModule } from '@angular/forms';
 
 import { BootstrapBasicControlComponent } from './bootstrap-basic-control.component';
+
+export class MockElementRef implements ElementRef {
+  public nativeElement = {
+    querySelector: () => {
+      return {
+        classList: {
+          remove: jasmine.createSpy('remove'),
+          add: jasmine.createSpy('add')
+        }
+      }
+    }
+  }
+}
 
 describe('BoostrapBasicControlComponent', () => {
   describe('TestingModule', () => {
     let component: BootstrapBasicControlComponent;
     let fixture: ComponentFixture<BootstrapBasicControlComponent>;
-
+    
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [BootstrapBasicControlComponent],
+        providers: [
+          { provide: ElementRef, useClass: MockElementRef }
+        ],
       }).compileComponents();
     }));
 
@@ -21,38 +37,94 @@ describe('BoostrapBasicControlComponent', () => {
       fixture = TestBed.createComponent(BootstrapBasicControlComponent);
       component = fixture.componentInstance;
 
-      fixture.detectChanges();
+      component.controlName = <any>{
+        errors: {
+          'required': ''
+        },
+        dirty: true,
+        valid: true
+      };
+      component.errorMessages = {
+        'required': 'Control is required'
+      };
+      component.myElement = new MockElementRef();
 
-      //component.refFormControl = new FormControl("value");
+      fixture.detectChanges();
     });
 
     it('should create', () => {
       expect(component).toBeTruthy();
     });
 
-    it('#hasError() should return true if errorMessage is set', () => {
-      component.errorMessage = 'errorMessage';
+    it('should set errorMessage on error', () => {
+      component.hasSuccess = jasmine.createSpy('hasSuccess').and.returnValue(false);
+      component.hasError = jasmine.createSpy('hasError').and.returnValue(true);
 
-      expect(component.hasError()).toBe(true);
+      fixture.detectChanges();
+
+      expect(component.errorMessage).toEqual(component.errorMessages['required']);
     });
 
-    it('#hasError() should return false if errorMessage is not set', () => {
-      expect(component.hasError()).toBe(false);
+    it('should concat errorMessages on error', () => {
+      component.hasSuccess = jasmine.createSpy('hasSuccess').and.returnValue(false);
+      component.hasError = jasmine.createSpy('hasError').and.returnValue(true);
+      component.controlName = <any>{
+        errors: {
+          'required': '',
+          'errorKey': ''
+        }
+      };
+      component.errorMessages = {
+        'required': 'Control is required',
+        'errorKey': 'Other Error message'
+      };
+
+
+      fixture.detectChanges();
+
+      expect(component.errorMessage).toEqual('Control is required Other Error message');
     });
 
-    /*
-    TODO Fake FormControlName
+    it('should clear errorMessage on success', () => {
+      component.hasSuccess = jasmine.createSpy('hasSuccess').and.returnValue(true);
+      component.hasError = jasmine.createSpy('hasError').and.returnValue(false);
+
+      component.errorMessages = {
+        'required': 'Control is required'
+      };
+      fixture.detectChanges();
+
+      expect(component.errorMessage).toEqual('');
+    });
+
+    //TODO Fake FormControlName
+    it('#hasError() should return true when controlName dirty and invalid', () => {
+      component.controlName.dirty = true;
+      component.controlName.valid = false;
+
+      expect(component.hasError()).toBeTruthy();
+    });
+
+    it('#hasError() should return false when controlName dirty and valid', () => {
+      component.controlName.dirty = true;
+      component.controlName.valid = true;
+
+      expect(component.hasError()).toBeFalsy();
+    });
+    
     it('#hasSuccess() should return true if control is valid and dirty',() => {
-      //will be always be valid => no validators
-      component.refFormControl.markAsDirty();
+      component.controlName.dirty = true;
+      component.controlName.valid = true;
 
-      expect(component.hasSuccess()).toBe(true);
+      expect(component.hasSuccess()).toBeTruthy();
     });
 
-    it('#hasSuccess() should return false if control is not dirty', () => {
+    it('#hasSuccess() should return false if control is dirty and invalid', () => {
+      component.controlName.dirty = true;
+      component.controlName.valid = false;
 
-      expect(component.hasSuccess()).toBe(false);
-    });*/
+      expect(component.hasSuccess()).toBeFalsy();
+    });
 
     describe('Template', () => {
       let label: HTMLLabelElement;
@@ -81,7 +153,7 @@ describe('BoostrapBasicControlComponent', () => {
       });
 
       it('should not display errorMessage when no error', () => {
-        component.errorMessage = "";
+        component.hasSuccess = jasmine.createSpy('hasSuccess').and.returnValue(true);
 
         fixture.detectChanges();
         let errorEl = fixture.debugElement.query(By.css('.form-control-feedback'));
@@ -90,14 +162,14 @@ describe('BoostrapBasicControlComponent', () => {
       });
 
       it('should display errorMessage when error', () => {
-        const expectedErrorMessage = 'expectedErrorMessage';
+        component.hasSuccess = jasmine.createSpy('hasSuccess').and.returnValue(false);
+        component.hasError = jasmine.createSpy('hasError').and.returnValue(true);
 
-        component.errorMessage = expectedErrorMessage;
         fixture.detectChanges();
         let errorEl = fixture.debugElement.query(By.css('.form-control-feedback'));
 
         expect(errorEl).toBeTruthy('error element should display');
-        expect(errorEl.nativeElement.textContent).toEqual(expectedErrorMessage, "expected message not displayed");
+        expect(errorEl.nativeElement.textContent).toEqual(component.errorMessages['required'], "expected message not displayed");
       });
 
       it('should set error classes on error', () => {
@@ -119,7 +191,7 @@ describe('BoostrapBasicControlComponent', () => {
   });
   describe('Inside of a TestHostComponent', () => {
     @Component({
-      template: `<base-bootstrap-basic-control>
+      template: `<base-bootstrap-basic-control [errorMessages]='errorMessages'>
                     <input type='text' class="form-control" formControlName='formControlName'/>
                 </base-bootstrap-basic-control>`
     })
@@ -127,6 +199,10 @@ describe('BoostrapBasicControlComponent', () => {
 
       @ViewChild(BootstrapBasicControlComponent)
       public readonly baseBootstrapComponent: BootstrapBasicControlComponent;
+
+      public readonly errorMessages = {
+        'required': 'RequiredErrorMessage'
+      };
     }
 
     let component: TestHostComponent;
@@ -145,6 +221,15 @@ describe('BoostrapBasicControlComponent', () => {
     beforeEach(() => {
       fixture = TestBed.createComponent(TestHostComponent);
       component = fixture.componentInstance;
+
+      //set the formControlName 
+      // TODO find a way to inject a mockObject via angular
+      component.baseBootstrapComponent.controlName = <any>{
+        errors: {
+          'required': '',
+          'errorKey': ''
+        }
+      }
 
       fixture.detectChanges();
     });

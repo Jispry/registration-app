@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap'
 
 import { IStepComponent } from '../../base/base-wizard.component';
 import { PlayerModel } from '../models/player.model';
@@ -14,6 +15,10 @@ export class PlayerComponent implements OnInit, IStepComponent {
   private isValid = false;
   public playerForm: FormGroup;
 
+  public readonly birthMinDate: NgbDateStruct = { day: 1, month: 1, year: 1932 };
+  public readonly birthMaxDate: NgbDateStruct = { day: 1, month: 1, year: 2005 };
+  public readonly requiredPlayersCount = 5;
+
   constructor(private formBuilder: FormBuilder) {
   }
 
@@ -25,8 +30,27 @@ export class PlayerComponent implements OnInit, IStepComponent {
     return this.isValid;
   }
 
+  public addNewPlayer(): void {
+    const playersArray = <FormArray>this.playerForm.get('players');
+    playersArray.push(this.buildPlayer());
+  }
+
   private buildForm(): void {
     this.playerForm = this.formBuilder.group({
+      players: this.formBuilder.array([this.buildPlayer()],
+        Validators.compose([
+          Validators.minLength(this.requiredPlayersCount),
+          Validators.maxLength(this.requiredPlayersCount)
+        ])
+      )
+    });
+
+    /*this.playerForm.valueChanges.subscribe(data => this.onFormValueChange(data));
+    this.onFormValueChange(); // (re)set validation messages now*/
+  }
+
+  private buildPlayer() {
+    let playerGroup = this.formBuilder.group({
       firstName: [undefined,
         [Validators.required]
       ],
@@ -34,16 +58,15 @@ export class PlayerComponent implements OnInit, IStepComponent {
         [Validators.required]
       ],
       birthDate: [undefined,
-        [Validators.required]
+        [Validators.required],
+        // TODO add Date Validation
       ]
     });
-
-    this.playerForm.valueChanges.subscribe(data => this.onFormValueChange(data));
-
-    this.onFormValueChange(); // (re)set validation messages now
+    return playerGroup;
   }
 
-  private onFormValueChange(data?: any) {
+  // TODO Error MEssages are not displayed anymore
+  /*private onFormValueChange(data?: any) {
     if (!this.playerForm) { return; }
 
     const form = this.playerForm;
@@ -58,29 +81,32 @@ export class PlayerComponent implements OnInit, IStepComponent {
         }
       }
     }
-  }
+  }*/
 
   /**
    * deteced errors
    */
-  formErrors = {
-    'firstName': '',
-    'lastName': '',
-    'birthDate': ''
-  }
+  /*formErrors = {
+    'players': '',
+  }*/
 
   /**
    * Validation messages
    */
   private readonly validationMessages = {
-    'firstName': {
-      'required': 'First name is Required',
+    'players': {
+      // TODO minLenght, MaxLength
     },
-    'lastName': {
-      'required': 'Last name is Required',
-    },
-    'birthDate': {
-      'required': 'Birth date is Required'
+    'player': {
+      'firstName': {
+        'required': 'First name is Required',
+      },
+      'lastName': {
+        'required': 'Last name is Required',
+      },
+      'birthDate': {
+        'required': 'Birth date is Required'
+      }
     }
   }
 }

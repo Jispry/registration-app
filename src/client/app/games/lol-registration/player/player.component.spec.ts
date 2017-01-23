@@ -2,7 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA, Directive } from '@angular/core';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormArray, FormControl } from '@angular/forms';
 
 import { PlayerComponent } from './player.component';
 import { RegistrationInformationService } from '../services/registration-information.service';
@@ -24,6 +24,8 @@ describe('PlayerComponent', () => {
   let component: PlayerComponent;
   let fixture: ComponentFixture<PlayerComponent>;
   let registrationServiceStub: any;// RegistrationInformationService;
+
+  const requiredPlayersCount = 5;
 
   beforeEach(async(() => {
     registrationServiceStub = {
@@ -62,50 +64,131 @@ describe('PlayerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have formErrors Object', () => {
+  /*it('should have formErrors Object', () => {
     expect(component.formErrors).toBeTruthy();
-  });
-
-  it('formErrors should have all required properties', () => {
-    const expectedFormErrorsKeys = ['firstName', 'lastName', 'birthDate'];
-
-    expect(Object.keys(component.formErrors)).toEqual(expectedFormErrorsKeys);
   });
 
   it('formErrors should not initialy contain any error messages', () => {
     Object.keys(component.formErrors).forEach(element => {
       expect(component.formErrors[element]).toEqual('', `'{element}' should be empty`);
     });
+  });*/
+
+  it('should have birthMinDate of 1932-1-1', () => {
+    expect(component.birthMinDate).toEqual({ day: 1, month: 1, year: 1932 });
+  })
+
+  it('should have minDate of 2005-1-1', () => {
+    expect(component.birthMaxDate).toEqual({ day: 1, month: 1, year: 2005 });
+  })
+
+  it('should bind boundary values to birthDate datepicker', () => {
+    const dateInputEl = fixture.debugElement.query(By.css('#birstDateId')).nativeElement;
+
+    //expect(dateInputEl.ngbDatepicker).toBeTruthy();
+
+    expect(dateInputEl.minDate).toBeTruthy();
+    expect(dateInputEl.minDate).toEqual(component.birthMinDate);
+
+    expect(dateInputEl.maxDate).toBeTruthy();
+    expect(dateInputEl.maxDate).toEqual(component.birthMaxDate);
   });
+
+  it('should have defined required number of players', () => {
+    expect(component.requiredPlayersCount).toBe(requiredPlayersCount);
+  })
 
   describe('Form', () => {
     it('shoud create teamForm', () => {
       expect(component.playerForm instanceof FormGroup).toBe(true);
     });
 
-    it('should have all required controls', () => {
-      let expecedControls = ['firstName', 'lastName', 'birthDate'];
+    it('teamForm should have players', () => {
+      expect(component.playerForm.get('players')).toBeTruthy();
+    });
+
+    it('should have players group', () => {
+      let expecedControls = ['players'];
 
       expect(Object.keys(component.playerForm.controls)).toEqual(expecedControls);
     });
 
-    it('firstName should be required', () => {
-      checkFormRequired('firstName');
+    it('players should be an FormArray', () => {
+      expect(component.playerForm.controls['players'] instanceof FormArray).toBeTruthy();
     });
 
-    it('lastName should be required', () => {
-      checkFormRequired('lastName');
+    it('#addNewPlayer() should and an other player', () => {
+      let players = <FormArray>component.playerForm.get('players');
+
+      component.addNewPlayer();
+
+      expect(players.length).toEqual(2);
     });
 
-    it('birthDate should be required', () => {
-      checkFormRequired('birthDate');
+    it('player group should be valid if it contains requiredPlayersCount of items', () => {
+      let players = <FormArray>component.playerForm.get('players');
+      pushDummyDataToPlayersArray(requiredPlayersCount);
+
+      expect(players.valid).toBeTruthy();
     });
 
-    function checkFormRequired(controlKey: string) {
-      component.playerForm.controls[controlKey].setValue(undefined);
+    it('player group should be invalid if it contains less than requiredPlayersCount of items', () => {
+      let players = <FormArray>component.playerForm.get('players');
+      pushDummyDataToPlayersArray(requiredPlayersCount - 1);
 
-      expect(component.playerForm.controls[controlKey].hasError('required')).toBe(true, 'should have "required" error');
-      expect(component.playerForm.valid).toBe(false, 'form.valid shoudl be false');
+      expect(players.valid).toBeFalsy();
+      expect(players.hasError('minlength')).toBeTruthy('should contain "minlength" error');
+    });
+
+    it('player group should be invalid if it contains more than requiredPlayersCount of items', () => {
+      let players = <FormArray>component.playerForm.get('players');
+      pushDummyDataToPlayersArray(requiredPlayersCount + 1);
+
+      expect(players.valid).toBeFalsy();
+      expect(players.hasError('maxlength')).toBeTruthy('should contain "maxlength" error');
+    });
+
+    describe('Player form group', () => {
+      let playerGroup: FormGroup;
+      beforeEach(() => {
+        playerGroup = <FormGroup>component.playerForm.get('players').get('0');
+      })
+
+      it('should have all required controls', () => {
+        let expecedControls = ['firstName', 'lastName', 'birthDate'];
+
+        expect(Object.keys(playerGroup.controls)).toEqual(expecedControls);
+      });
+
+      it('Player firstName should be required', () => {
+        checkFormRequired('firstName');
+      });
+
+      it('lastName should be required', () => {
+        checkFormRequired('lastName');
+      });
+
+      it('birthDate should be required', () => {
+        checkFormRequired('birthDate');
+      });
+
+      function checkFormRequired(controlKey: string) {
+        playerGroup.controls[controlKey].setValue(undefined);
+
+        expect(playerGroup.controls[controlKey].hasError('required')).toBe(true, 'should have "required" error');
+        expect(playerGroup.valid).toBe(false, 'form.valid shoudl be false');
+      }
+    });
+
+    function pushDummyDataToPlayersArray(ammount: number) {
+      let players = <FormArray>component.playerForm.get('players');
+      players.removeAt(0);// remove the 1st itemin array because it has some set validations
+
+      for (let i = 0; i < ammount; i++) {
+        players.push(new FormGroup({
+          someControl: new FormControl()
+        }))
+      }
     }
   });
 });

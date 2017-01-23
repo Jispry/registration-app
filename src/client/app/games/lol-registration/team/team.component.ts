@@ -44,9 +44,9 @@ export class TeamComponent implements OnInit, IStepComponent {
       ],
     });
 
-    this.teamForm.valueChanges.subscribe(data => this.onFormValueChange(data));
+    //this.teamForm.valueChanges.subscribe(data => this.onFormValueChange(data));
 
-    this.onFormValueChange(); // (re)set validation messages now
+    //this.onFormValueChange(); // (re)set validation messages now
   }
 
   private onFormValueChange(data?: any) {

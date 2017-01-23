@@ -12,7 +12,9 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
   private readonly formControlDanger = 'form-control-danger';
 
   @Input()
-  errorMessage: string;
+  errorMessages: {
+    [key: string]: any;
+  };
 
   @Input()
   label: string;
@@ -20,25 +22,25 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
   @Input()
   labelFor: string;
 
-  /*@Input()
-  refFormControl: FormControl*/
+  errorMessage: string;
 
   //TODO Fake FormControlName
   @ContentChild(FormControlName)
   controlName: FormControlName;
 
-  constructor(private myElement: ElementRef) { }
+  // TODO inject fake object on unit test. classic overrrideComponent with useClass does not work
+  constructor(public myElement: ElementRef) { }
 
   ngOnInit() {
-    this.updateControlCssClasses();
+    this.updateControl();
   }
 
   ngDoCheck() {
-    this.updateControlCssClasses();
+    this.updateControl();
   }
 
   hasError(): boolean {
-    return !!this.errorMessage;
+    return this.controlName && this.controlName.dirty && !this.controlName.valid;
   }
 
   hasSuccess(): boolean {
@@ -46,18 +48,28 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
     //return this.refFormControl && this.refFormControl.dirty && this.refFormControl.valid;
   }
 
-  private updateControlCssClasses() {
+  private updateControl() {
     const htmlElement = <HTMLInputElement>this.myElement.nativeElement.querySelector("input");
     if (!htmlElement) { return; }
     // remove classes before evaluation
-    htmlElement.classList.remove(this.formControlSuccess);
-    htmlElement.classList.remove(this.formControlDanger);
-    
+    htmlElement.classList.remove(this.formControlSuccess, this.formControlDanger);
+    //htmlElement.classList.remove(this.formControlDanger);
+
+    // clean Erorrmessage
+    this.errorMessage = '';
     if (this.hasSuccess()) {
       htmlElement.classList.add(this.formControlSuccess);
     } else if (this.hasError()) {
       htmlElement.classList.add(this.formControlDanger);
+      this.setErrorMessages();
     }
   }
 
+  private setErrorMessages() {
+    for (const key in this.controlName.errors) {
+      this.errorMessage += this.errorMessages[key] + ' ';
+    }
+
+    this.errorMessage = this.errorMessage.trim();
+  }
 }

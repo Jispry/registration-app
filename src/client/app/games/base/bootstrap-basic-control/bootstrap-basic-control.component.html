@@ -2,5 +2,5 @@
                 'has-success' : hasSuccess() }">
   <label class="form-control-label" for="{{labelFor}}">{{label}}</label>
   <ng-content></ng-content>
-  <div *ngIf="hasError()" class="form-control-feedback">{{errorMessage}}</div>
+  <div *ngIf="!!errorMessage" class="form-control-feedback">{{errorMessage}}</div>
 </div>
