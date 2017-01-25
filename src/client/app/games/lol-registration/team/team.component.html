@@ -3,7 +3,7 @@
 </p>
 <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
   <base-bootstrap-basic-control [label]="'Team name:'" [labelFor]="'teamNameId'" [errorMessages]="validationMessages.name">
-    <input type="text" class="form-control" id="teamNameId" name="name" formControlName="name" />
+    <input type="text" class="form-control" #inputEl id="teamNameId" name="name" formControlName="name" />
   </base-bootstrap-basic-control>
 </form>
 {{teamForm.valid}}

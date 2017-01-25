@@ -2,3 +2,8 @@
 body {
     padding-top: 70px;
 }
+
+/* change cursor on ngbDatepicker*/
+.day.disabled {
+    cursor: not-allowed !important;
+}

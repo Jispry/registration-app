@@ -2,6 +2,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement, NO_ERRORS_SCHEMA, Directive } from '@angular/core';
+import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl } from '@angular/forms';
 
 import { PlayerComponent } from './player.component';
@@ -24,10 +25,15 @@ describe('PlayerComponent', () => {
   let component: PlayerComponent;
   let fixture: ComponentFixture<PlayerComponent>;
   let registrationServiceStub: any;// RegistrationInformationService;
+  let routerStub: any;
 
   const requiredPlayersCount = 5;
 
   beforeEach(async(() => {
+    routerStub = {
+      navigate: jasmine.createSpy('navigate')
+    };
+
     registrationServiceStub = {
       model: {
         team: {
@@ -47,7 +53,8 @@ describe('PlayerComponent', () => {
       .overrideComponent(PlayerComponent, {
         set: {
           providers: [
-            { provide: RegistrationInformationService, useValue: registrationServiceStub }
+            { provide: RegistrationInformationService, useValue: registrationServiceStub },
+            { provide: Router, useValue: routerStub }
           ],
         }
       })
@@ -78,9 +85,17 @@ describe('PlayerComponent', () => {
     expect(component.birthMinDate).toEqual({ day: 1, month: 1, year: 1932 });
   })
 
-  it('should have minDate of 2005-1-1', () => {
-    expect(component.birthMaxDate).toEqual({ day: 1, month: 1, year: 2005 });
+  it('should have minDate of 2005-12-31', () => {
+    expect(component.birthMaxDate).toEqual({ day: 31, month: 12, year: 2005 });
   })
+
+  describe('previousStep()', () => {
+    it('should navigate back to team', () => {
+      component.previousStep();
+
+      expect(routerStub.navigate).toHaveBeenCalledWith(['lol', { outlets: { 'form-wizzard': 'team' } }]);
+    });
+  });
 
   it('should bind boundary values to birthDate datepicker', () => {
     const dateInputEl = fixture.debugElement.query(By.css('#birstDateId')).nativeElement;

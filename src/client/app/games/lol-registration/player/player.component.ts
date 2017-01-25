@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap'
+import { Router } from '@angular/router';
+import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { IStepComponent } from '../../base/base-wizard.component';
 import { PlayerModel } from '../models/player.model';
@@ -16,10 +17,10 @@ export class PlayerComponent implements OnInit, IStepComponent {
   public playerForm: FormGroup;
 
   public readonly birthMinDate: NgbDateStruct = { day: 1, month: 1, year: 1932 };
-  public readonly birthMaxDate: NgbDateStruct = { day: 1, month: 1, year: 2005 };
+  public readonly birthMaxDate: NgbDateStruct = { day: 31, month: 12, year: 2005 };
   public readonly requiredPlayersCount = 5;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, private router: Router) {
   }
 
   ngOnInit() {
@@ -28,6 +29,10 @@ export class PlayerComponent implements OnInit, IStepComponent {
 
   public isDataValid(): boolean {
     return this.isValid;
+  }
+
+  public previousStep(): void {
+    this.router.navigate(['lol', { outlets: { 'form-wizzard': 'team' } }]);
   }
 
   public addNewPlayer(): void {

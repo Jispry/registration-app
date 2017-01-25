@@ -5,17 +5,17 @@
   <div formArrayName="players">
     <div [formGroupName]="0">
       <base-bootstrap-basic-control [label]="'First name:'" [labelFor]="'firstNameId'" [errorMessages]="validationMessages.player.firstName">
-        <input type="text" class="form-control" id="firstNameId" name="firstName" formControlName="firstName" />
+        <input type="text" class="form-control" id="firstNameId" #inputEl name="firstName" formControlName="firstName" />
       </base-bootstrap-basic-control>
 
       <base-bootstrap-basic-control [label]="'Last name:'" [labelFor]="'lastNameId'" [errorMessages]="validationMessages.player.lastName">
-        <input type="text" class="form-control" id="lastNameId" name="last-name" formControlName="lastName" />
+        <input type="text" class="form-control" id="lastNameId" #inputEl name="last-name" formControlName="lastName" />
       </base-bootstrap-basic-control>
 
       <!-- change to DATE-->
       <base-bootstrap-basic-control [label]="'Birth date:'" [labelFor]="'birstDateId'" [errorMessages]="validationMessages.player.birthDate">
         <div class="input-group">
-          <input type="text" class="form-control" id="birstDateId" name="birtDate" formControlName="birthDate" [minDate]="birthMinDate"
+          <input type="text" class="form-control" id="birstDateId" #inputEl name="birtDate" formControlName="birthDate" [minDate]="birthMinDate"
             [maxDate]="birthMaxDate" ngbDatepicker #d="ngbDatepicker" />
           <div class="input-group-addon" (click)="d.toggle()">
             <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -25,3 +25,7 @@
     </div>
   </div>
 </form>
+<div class="btn-group">
+  <button (click)="previousStep()" class="btn btn-default">Back</button>
+  <button class="btn btn-primary">Next</button>
+</div>

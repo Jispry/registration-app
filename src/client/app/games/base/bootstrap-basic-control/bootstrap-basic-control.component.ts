@@ -28,8 +28,10 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
   @ContentChild(FormControlName)
   controlName: FormControlName;
 
-  // TODO inject fake object on unit test. classic overrrideComponent with useClass does not work
-  constructor(public myElement: ElementRef) { }
+  @ContentChild('inputEl')
+  inputElemnt: ElementRef;
+
+  constructor() { }
 
   ngOnInit() {
     this.updateControl();
@@ -49,18 +51,17 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
   }
 
   private updateControl() {
-    const htmlElement = <HTMLInputElement>this.myElement.nativeElement.querySelector("input");
-    if (!htmlElement) { return; }
+    const htmlInputElement = <HTMLInputElement>this.inputElemnt.nativeElement;
+    if (!htmlInputElement) { return; }
     // remove classes before evaluation
-    htmlElement.classList.remove(this.formControlSuccess, this.formControlDanger);
-    //htmlElement.classList.remove(this.formControlDanger);
+    htmlInputElement.classList.remove(this.formControlSuccess, this.formControlDanger);
 
     // clean Erorrmessage
     this.errorMessage = '';
     if (this.hasSuccess()) {
-      htmlElement.classList.add(this.formControlSuccess);
+      htmlInputElement.classList.add(this.formControlSuccess);
     } else if (this.hasError()) {
-      htmlElement.classList.add(this.formControlDanger);
+      htmlInputElement.classList.add(this.formControlDanger);
       this.setErrorMessages();
     }
   }
