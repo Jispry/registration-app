@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 import { IStepComponent } from '../../base/base-wizard.component';
-import { PlayerModel } from '../models/player.model';
+import { PlayerModel } from '../models/index';
 import { RegistrationInformationService } from '../services/registration-information.service';
 
 @Component({

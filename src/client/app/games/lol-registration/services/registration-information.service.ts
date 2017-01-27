@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { RegistrationModel } from '../models/registration.model';
-import { TeamModel} from '../models/team.model';
-import { PlayerModel} from '../models/player.model';
+import { RegistrationModel, TeamModel, PlayerModel } from '../models/index';
 
 @Injectable()
 export class RegistrationInformationService {

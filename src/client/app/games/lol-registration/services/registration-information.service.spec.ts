@@ -1,5 +1,4 @@
-import { TeamModel } from '../models/team.model';
-import { PlayerModel } from '../models/player.model';
+import { TeamModel, PlayerModel } from '../models/index';
 import {RegistrationInformationService} from './registration-information.service';
 
 describe('RegistrationInformationService', () => {

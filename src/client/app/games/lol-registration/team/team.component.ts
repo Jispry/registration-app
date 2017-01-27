@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { IStepComponent } from '../../base/base-wizard.component';
-import { TeamModel } from '../models/team.model';
+import { TeamModel } from '../models/index';
 import { RegistrationInformationService } from '../services/registration-information.service';
 
 @Component({

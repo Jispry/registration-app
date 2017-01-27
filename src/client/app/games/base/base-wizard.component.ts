@@ -9,6 +9,7 @@ export interface IStep {
 
 /**
  * base class for Wizard form components
+ * TODO revisit
  */
 export abstract class BaseWizardCompoment {
     /*public steps: IStep[];

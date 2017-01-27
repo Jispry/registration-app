@@ -1,3 +1,3 @@
-import { BaseTeamModel } from '../../base/models/base-team.model';
+import { BaseTeamModel} from '../../base/models/index';
 
 export class TeamModel extends BaseTeamModel {}
