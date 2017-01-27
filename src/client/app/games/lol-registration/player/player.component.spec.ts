@@ -24,7 +24,7 @@ class FakeNgbDatepickerDirective {
 describe('PlayerComponent', () => {
   let component: PlayerComponent;
   let fixture: ComponentFixture<PlayerComponent>;
-  let registrationServiceStub: any;// RegistrationInformationService;
+  let registrationServiceStub: any; // RegistrationInformationService;
   let routerStub: any;
 
   const requiredPlayersCount = 5;
@@ -37,13 +37,13 @@ describe('PlayerComponent', () => {
     registrationServiceStub = {
       model: {
         team: {
-          name: "TeamName"
+          name: 'TeamName'
         },
         players: [
-          { firstName: "FirstName", lastName: "lastName", birthDate: new Date(2000, 1, 1) }
+          { firstName: 'FirstName', lastName: 'lastName', birthDate: new Date(2000, 1, 1) }
         ]
       }
-    }
+    };
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
@@ -83,11 +83,11 @@ describe('PlayerComponent', () => {
 
   it('should have birthMinDate of 1932-1-1', () => {
     expect(component.birthMinDate).toEqual({ day: 1, month: 1, year: 1932 });
-  })
+  });
 
   it('should have minDate of 2005-12-31', () => {
     expect(component.birthMaxDate).toEqual({ day: 31, month: 12, year: 2005 });
-  })
+  });
 
   describe('previousStep()', () => {
     it('should navigate back to team', () => {
@@ -100,7 +100,7 @@ describe('PlayerComponent', () => {
   it('should bind boundary values to birthDate datepicker', () => {
     const dateInputEl = fixture.debugElement.query(By.css('#birstDateId')).nativeElement;
 
-    //expect(dateInputEl.ngbDatepicker).toBeTruthy();
+    // expect(dateInputEl.ngbDatepicker).toBeTruthy();
 
     expect(dateInputEl.minDate).toBeTruthy();
     expect(dateInputEl.minDate).toEqual(component.birthMinDate);
@@ -111,7 +111,7 @@ describe('PlayerComponent', () => {
 
   it('should have defined required number of players', () => {
     expect(component.requiredPlayersCount).toBe(requiredPlayersCount);
-  })
+  });
 
   describe('Form', () => {
     it('shoud create teamForm', () => {
@@ -167,7 +167,7 @@ describe('PlayerComponent', () => {
       let playerGroup: FormGroup;
       beforeEach(() => {
         playerGroup = <FormGroup>component.playerForm.get('players').get('0');
-      })
+      });
 
       it('should have all required controls', () => {
         let expecedControls = ['firstName', 'lastName', 'birthDate'];
@@ -197,12 +197,12 @@ describe('PlayerComponent', () => {
 
     function pushDummyDataToPlayersArray(ammount: number) {
       let players = <FormArray>component.playerForm.get('players');
-      players.removeAt(0);// remove the 1st itemin array because it has some set validations
+      players.removeAt(0); // remove the 1st itemin array because it has some set validations
 
       for (let i = 0; i < ammount; i++) {
         players.push(new FormGroup({
           someControl: new FormControl()
-        }))
+        }));
       }
     }
   });

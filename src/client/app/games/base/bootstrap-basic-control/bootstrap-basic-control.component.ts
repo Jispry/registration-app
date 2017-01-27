@@ -24,7 +24,7 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
 
   errorMessage: string;
 
-  //TODO Fake FormControlName
+  // TODO Fake FormControlName
   @ContentChild(FormControlName)
   controlName: FormControlName;
 
@@ -47,7 +47,7 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
 
   hasSuccess(): boolean {
     return this.controlName && this.controlName.dirty && this.controlName.valid;
-    //return this.refFormControl && this.refFormControl.dirty && this.refFormControl.valid;
+    // return this.refFormControl && this.refFormControl.dirty && this.refFormControl.valid;
   }
 
   private updateControl() {
@@ -68,7 +68,9 @@ export class BootstrapBasicControlComponent implements OnInit, DoCheck {
 
   private setErrorMessages() {
     for (const key in this.controlName.errors) {
-      this.errorMessage += this.errorMessages[key] + ' ';
+      if (this.controlName.errors.hasOwnProperty(key)) {
+        this.errorMessage += this.errorMessages[key] + ' ';
+      }
     }
 
     this.errorMessage = this.errorMessage.trim();

@@ -1,9 +1,9 @@
 <p>
   player works!
 </p>
-<form [formGroup]="playerForm" (ngSubmit)="onSubmit()">
-  <div formArrayName="players">
-    <div [formGroupName]="0">
+<form [formGroup]="playerForm" >
+  <!--<div formArrayName="players" *ngFor="let player of players.controls;let i=index">
+    <div [formGroupName]="i">
       <base-bootstrap-basic-control [label]="'First name:'" [labelFor]="'firstNameId'" [errorMessages]="validationMessages.player.firstName">
         <input type="text" class="form-control" id="firstNameId" #inputEl name="firstName" formControlName="firstName" />
       </base-bootstrap-basic-control>
@@ -12,7 +12,6 @@
         <input type="text" class="form-control" id="lastNameId" #inputEl name="last-name" formControlName="lastName" />
       </base-bootstrap-basic-control>
 
-      <!-- change to DATE-->
       <base-bootstrap-basic-control [label]="'Birth date:'" [labelFor]="'birstDateId'" [errorMessages]="validationMessages.player.birthDate">
         <div class="input-group">
           <input type="text" class="form-control" id="birstDateId" #inputEl name="birtDate" formControlName="birthDate" [minDate]="birthMinDate"
@@ -23,7 +22,50 @@
         </div>
       </base-bootstrap-basic-control>
     </div>
-  </div>
+  </div>-->
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th>Nr.</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Birth date</th>
+      </tr>
+    </thead>
+    <tbody formArrayName="players">
+      <tr *ngFor="let player of players.controls;let i=index" [formGroupName]="i">
+        <td>{{i + 1}}</td>
+        <td>
+          <base-bootstrap-basic-control [errorMessages]="validationMessages.player.firstName">
+            <input type="text" class="form-control" id="firstNameId" #inputEl name="firstName" formControlName="firstName" />
+          </base-bootstrap-basic-control>
+        </td>
+        <td>
+          <base-bootstrap-basic-control [errorMessages]="validationMessages.player.lastName">
+            <input type="text" class="form-control" id="lastNameId" #inputEl name="last-name" formControlName="lastName" />
+          </base-bootstrap-basic-control>
+        </td>
+        <td>
+          <base-bootstrap-basic-control [errorMessages]="validationMessages.player.birthDate">
+            <div class="input-group">
+              <input type="text" class="form-control" id="birstDateId" #inputEl name="birtDate" formControlName="birthDate" [minDate]="birthMinDate"
+                [maxDate]="birthMaxDate" ngbDatepicker #d="ngbDatepicker" />
+              <div class="input-group-addon" (click)="d.toggle()">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+              </div>
+            </div>
+          </base-bootstrap-basic-control>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4">
+          <button class="btn btn-sm btn-primary" (click)="addNewPlayer()">Add Player</button>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 </form>
 <div class="btn-group">
   <button (click)="previousStep()" class="btn btn-default">Back</button>

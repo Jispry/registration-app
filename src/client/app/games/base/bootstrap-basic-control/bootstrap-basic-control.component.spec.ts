@@ -12,7 +12,7 @@ class MockElementRef implements ElementRef {
       remove: jasmine.createSpy('remove'),
       add: jasmine.createSpy('add')
     }
-  }
+  };
 }
 
 describe('BoostrapBasicControlComponent', () => {
@@ -188,6 +188,14 @@ describe('BoostrapBasicControlComponent', () => {
     let component: BootstrapBasicControlComponent;
     let fixture: ComponentFixture<BootstrapBasicControlComponent>;
 
+    // let label: HTMLLabelElement;
+    let mainEl: HTMLDivElement;
+
+    function getLabel(): HTMLLabelElement {
+      const label = fixture.debugElement.query(By.css('.form-control-label'));
+      return label ? label.nativeElement : undefined;
+    }
+
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [BootstrapBasicControlComponent],
@@ -216,33 +224,36 @@ describe('BoostrapBasicControlComponent', () => {
       fixture.detectChanges();
     });
 
+    beforeEach(() => {
+      // label = <HTMLLabelElement>fixture.debugElement.query(By.css('.form-control-label')).nativeElement;
+      mainEl = fixture.debugElement.query(By.css('.form-group')).nativeElement;
+    });
+
     it('should create', () => {
       expect(component).toBeTruthy();
     });
 
-    let label: HTMLLabelElement;
-    let mainEl: HTMLDivElement;
-
-    beforeEach(() => {
-      label = <HTMLLabelElement>fixture.debugElement.query(By.css('.form-control-label')).nativeElement;
-      mainEl = fixture.debugElement.query(By.css('.form-group')).nativeElement;
-    });
     it('should display label', () => {
       const expectedLabel = 'expectedLabel';
 
       component.label = expectedLabel;
       fixture.detectChanges();
 
-      expect(label.textContent).toEqual(expectedLabel);
+      expect(getLabel().textContent).toEqual(expectedLabel);
     });
 
-    it('should set for in label', () => {
+    it('should hide label element if no label specified', () => {
+      expect(getLabel()).toBeFalsy();
+    });
+
+    it('should set for in label when label is defined', () => {
       const expectedLabelFor = 'labelFor';
 
+      component.label = 'label';
       component.labelFor = expectedLabelFor;
       fixture.detectChanges();
 
-      expect(label.getAttribute('for')).toEqual(expectedLabelFor);
+      expect(getLabel().getAttribute('for')).toEqual(expectedLabelFor);
     });
 
     it('should not display errorMessage when no error', () => {
@@ -262,7 +273,7 @@ describe('BoostrapBasicControlComponent', () => {
       let errorEl = fixture.debugElement.query(By.css('.form-control-feedback'));
 
       expect(errorEl).toBeTruthy('error element should display');
-      expect(errorEl.nativeElement.textContent).toEqual(component.errorMessages['required'], "expected message not displayed");
+      expect(errorEl.nativeElement.textContent).toEqual(component.errorMessages['required'], 'expected message not displayed');
     });
 
     it('should set error classes on error', () => {
@@ -300,9 +311,6 @@ describe('BoostrapBasicControlComponent', () => {
     let component: TestHostComponent;
     let fixture: ComponentFixture<TestHostComponent>;
 
-    const formControlSuccess = 'form-control-success';
-    const formControlDanger = 'form-control-danger';
-
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         declarations: [TestHostComponent, BootstrapBasicControlComponent],
@@ -314,14 +322,14 @@ describe('BoostrapBasicControlComponent', () => {
       fixture = TestBed.createComponent(TestHostComponent);
       component = fixture.componentInstance;
 
-      //set the formControlName 
+      // set the formControlName 
       // TODO find a way to inject a mockObject via angular
       component.baseBootstrapComponent.controlName = <any>{
         errors: {
           'required': '',
           'errorKey': ''
         }
-      }
+      };
 
       fixture.detectChanges();
     });

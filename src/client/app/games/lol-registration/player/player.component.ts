@@ -20,11 +20,38 @@ export class PlayerComponent implements OnInit, IStepComponent {
   public readonly birthMaxDate: NgbDateStruct = { day: 31, month: 12, year: 2005 };
   public readonly requiredPlayersCount = 5;
 
+  /**
+   * Validation messages
+   */
+  public readonly validationMessages = {
+    'players': {
+      // TODO minLenght, MaxLength
+    },
+    'player': {
+      'firstName': {
+        'required': 'First name is Required',
+      },
+      'lastName': {
+        'required': 'Last name is Required',
+      },
+      'birthDate': {
+        'required': 'Birth date is Required'
+      }
+    }
+  };
+
   constructor(private formBuilder: FormBuilder, private router: Router) {
   }
 
   ngOnInit() {
     this.buildForm();
+  }
+
+  /**
+   * playerForm.controls.players
+   */
+  get players(): FormArray {
+    return <FormArray>this.playerForm.get('players');
   }
 
   public isDataValid(): boolean {
@@ -36,8 +63,7 @@ export class PlayerComponent implements OnInit, IStepComponent {
   }
 
   public addNewPlayer(): void {
-    const playersArray = <FormArray>this.playerForm.get('players');
-    playersArray.push(this.buildPlayer());
+    this.players.push(this.buildPlayer());
   }
 
   private buildForm(): void {
@@ -94,24 +120,4 @@ export class PlayerComponent implements OnInit, IStepComponent {
   /*formErrors = {
     'players': '',
   }*/
-
-  /**
-   * Validation messages
-   */
-  private readonly validationMessages = {
-    'players': {
-      // TODO minLenght, MaxLength
-    },
-    'player': {
-      'firstName': {
-        'required': 'First name is Required',
-      },
-      'lastName': {
-        'required': 'Last name is Required',
-      },
-      'birthDate': {
-        'required': 'Birth date is Required'
-      }
-    }
-  }
 }
