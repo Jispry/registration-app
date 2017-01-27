@@ -75,7 +75,7 @@ describe('TeamComponent', () => {
   });
 
   it('should load data for teamModel from sevice', () => {
-    expect(component.teamModel.name).toEqual('TeamName', "teamModel.name shoud have value TeamName");
+    expect(component.teamModel.name).toEqual('TeamName', 'teamModel.name shoud have value TeamName');
   });
 
   describe('nextStep()', () => {
@@ -96,7 +96,7 @@ describe('TeamComponent', () => {
     });
   });
 
-  //TODO unit test validation messages
+  // TODO unit test validation messages
   describe('Form', () => {
     it('shoud create teamForm', () => {
       expect(component.teamForm instanceof FormGroup).toBe(true);

@@ -17,6 +17,6 @@ export class LolWizardComponent extends BaseWizardCompoment implements OnInit, A
     ngOnInit() {
     }
 
-    ngAfterViewChecked(){
+    ngAfterViewChecked() {
     }
 }

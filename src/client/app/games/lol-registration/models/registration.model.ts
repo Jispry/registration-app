@@ -5,7 +5,7 @@ export class RegistrationModel {
     team: TeamModel;
     players: PlayerModel[];
 
-    constructor(){
+    constructor() {
         this.team = new TeamModel();
         this.players = [];
     }

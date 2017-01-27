@@ -10,6 +10,6 @@ interface IRegistrationOption {
 })
 export class ChooseRegistrationComponent {
     registrationOptions: IRegistrationOption[] = [
-        { label: "League of Legends", url: "/lol" }
+        { label: 'League of Legends', url: '/lol' }
     ];
 }

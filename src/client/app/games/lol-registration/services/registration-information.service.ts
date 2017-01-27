@@ -6,8 +6,9 @@ import { PlayerModel} from '../models/player.model';
 
 @Injectable()
 export class RegistrationInformationService {
-    private model: RegistrationModel
-    constructor(){
+    private model: RegistrationModel;
+
+    constructor() {
         this.model = new RegistrationModel();
     }
 
@@ -23,7 +24,7 @@ export class RegistrationInformationService {
         return this.model.players;
     }
 
-    public updatePlayers(players: PlayerModel[]){
+    public updatePlayers(players: PlayerModel[]) {
         this.model.players = players;
     }
 }

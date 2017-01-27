@@ -7,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
-import { GamesModule } from './games/games.module'
+import { GamesModule } from './games/games.module';
 import { ChooseRegistrationComponent } from './choose-registration.component';
 
 const appRoutes: Routes = [

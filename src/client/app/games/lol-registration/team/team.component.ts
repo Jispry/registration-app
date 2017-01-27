@@ -15,6 +15,22 @@ export class TeamComponent implements OnInit, IStepComponent {
   public teamModel: TeamModel;
   public teamForm: FormGroup;
 
+  /**
+   * deteced errors
+   */
+  public formErrors = {
+    'name': '',
+  };
+
+  /**
+   * Validation messages
+   */
+  public readonly validationMessages = {
+    'name': {
+      'required': 'Team name is Required',
+    }
+  };
+
   constructor(private formBuilder: FormBuilder,
     private modelService: RegistrationInformationService,
     private router: Router) {
@@ -31,8 +47,8 @@ export class TeamComponent implements OnInit, IStepComponent {
   }
 
   public nextStep() {
-    if (this.teamForm.valid){
-      this.modelService.updateTeam(this.teamModel)
+    if (this.teamForm.valid) {
+      this.modelService.updateTeam(this.teamModel);
       this.router.navigate(['lol', { outlets: { 'form-wizzard': 'player' } }]);
     }
   }
@@ -44,12 +60,12 @@ export class TeamComponent implements OnInit, IStepComponent {
       ],
     });
 
-    //this.teamForm.valueChanges.subscribe(data => this.onFormValueChange(data));
+    // this.teamForm.valueChanges.subscribe(data => this.onFormValueChange(data));
 
-    //this.onFormValueChange(); // (re)set validation messages now
+    // this.onFormValueChange(); // (re)set validation messages now
   }
 
-  private onFormValueChange(data?: any) {
+  /*private onFormValueChange(data?: any) {
     if (!this.teamForm) { return; }
 
     const form = this.teamForm;
@@ -66,21 +82,5 @@ export class TeamComponent implements OnInit, IStepComponent {
     }
 
     this.teamModel = form.value;
-  }
-
-  /**
-   * deteced errors
-   */
-  formErrors = {
-    'name': '',
-  }
-
-  /**
-   * Validation messages
-   */
-  private readonly validationMessages = {
-    'name': {
-      'required': 'Team name is Required',
-    }
-  }
+  } */
 }

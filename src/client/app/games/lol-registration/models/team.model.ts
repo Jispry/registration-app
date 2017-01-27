@@ -1,4 +1,3 @@
-import { BaseTeamModel } from '../../base/models/base-team.model'
+import { BaseTeamModel } from '../../base/models/base-team.model';
 
-export class TeamModel extends BaseTeamModel{}
-
+export class TeamModel extends BaseTeamModel {}

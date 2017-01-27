@@ -33,8 +33,8 @@ describe('RegistrationInformationService', () => {
 
     it('#updatePlayers should update players', () => {
         let expectPlayers: PlayerModel[] = [{
-            firstName: "firstName",
-            lastName: "lastName",
+            firstName: 'firstName',
+            lastName: 'lastName',
             birthDate: new Date()
         }];
 

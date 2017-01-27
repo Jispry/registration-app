@@ -1,7 +1,7 @@
 <p>
   team works!
 </p>
-<form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="teamForm">
   <base-bootstrap-basic-control [label]="'Team name:'" [labelFor]="'teamNameId'" [errorMessages]="validationMessages.name">
     <input type="text" class="form-control" #inputEl id="teamNameId" name="name" formControlName="name" />
   </base-bootstrap-basic-control>

@@ -1,3 +1,3 @@
-export class BaseTeamModel{
+export class BaseTeamModel {
     public name: string;
 }
