@@ -19,100 +19,130 @@ class FakeRegistrationInformationService {
 }
 
 describe('TeamComponent', () => {
-  let component: TeamComponent;
-  let fixture: ComponentFixture<TeamComponent>;
-  let routerStub;
+  describe('Isolated tests', () => {
+    let component: TeamComponent;
+    let mockFormBuilder: any;
+    let mockRouter;
+    let mockRegistrationInformationService;
 
-  beforeEach(async(() => {
-    routerStub = {
-      navigate: jasmine.createSpy('navigate')
-    };
+    beforeEach(() => {
+      mockFormBuilder = jasmine.createSpyObj('mockFormBuilder', ['group']);
+      mockRouter = jasmine.createSpyObj('Router', ['navigate']);
+      mockRegistrationInformationService = jasmine.createSpyObj('RegistrationInformationService', ['getTeam', 'updateTeam']);
+      component = new TeamComponent(mockFormBuilder, mockRegistrationInformationService, mockRouter);
+    });
 
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [TeamComponent],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-      .overrideComponent(TeamComponent, {
-        set: {
-          providers: [
-            { provide: RegistrationInformationService, useClass: FakeRegistrationInformationService },
-            { provide: Router, useValue: routerStub }
-          ],
-        }
+    describe('ngOnInit()', () => {
+      it('should call getTeam', () => {
+        mockRegistrationInformationService.getTeam.and.returnValue({ name: 'name' });
+
+        component.ngOnInit();
+
+        expect(mockRegistrationInformationService.getTeam).toHaveBeenCalledTimes(1);
+      });
+
+      it('should instanciate teamForm', () => {
+        const expectedFormGroup = {
+          name: {
+            someValue: 0
+          }
+        };
+        mockRegistrationInformationService.getTeam.and.returnValue({ name: 'name' });
+        mockFormBuilder.group.and.returnValue(expectedFormGroup);
+
+        component.ngOnInit();
+
+        expect(mockFormBuilder.group).toHaveBeenCalledTimes(1);
+        expect(component.teamForm).toBe(expectedFormGroup);
+      });
+    });
+
+    describe('nextStep()', () => {
+      beforeEach(() => {
+        component.teamForm = <any>{
+          value: {
+            name: 'name'
+          },
+          valid: true
+        };
+      });
+
+      it('sould not navigate to Player or call updateTeam if teamForm is invalid', () => {
+        component.teamForm.valid = false;
+
+        component.nextStep();
+
+        expect(mockRouter.navigate).not.toHaveBeenCalled();
+        expect(mockRegistrationInformationService.updateTeam).not.toHaveBeenCalled();
+      });
+
+      it('should navigate to Player', () => {
+        component.nextStep();
+
+        expect(mockRouter.navigate).toHaveBeenCalledWith(['lol', { outlets: { 'form-wizzard': 'player' } }]);
+      });
+
+      it('should pass teamData to registrationInformationService.updateTeam', () => {
+        component.nextStep();
+
+        expect(mockRegistrationInformationService.updateTeam).toHaveBeenCalledWith(component.teamForm.value);
+      });
+    });
+  });
+
+  describe('Testing module', () => {
+    let component: TeamComponent;
+    let fixture: ComponentFixture<TeamComponent>;
+    let routerStub;
+
+    beforeEach(async(() => {
+      routerStub = {
+        navigate: jasmine.createSpy('navigate')
+      };
+
+      TestBed.configureTestingModule({
+        imports: [ReactiveFormsModule],
+        declarations: [TeamComponent],
+        schemas: [NO_ERRORS_SCHEMA]
       })
-      .compileComponents();
-  }));
+        .overrideComponent(TeamComponent, {
+          set: {
+            providers: [
+              { provide: RegistrationInformationService, useClass: FakeRegistrationInformationService },
+              { provide: Router, useValue: routerStub }
+            ],
+          }
+        })
+        .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TeamComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should inicialize teamModel', () => {
-    expect(component.teamModel).toBeTruthy();
-  });
-
-  it('should have formErrors Object', () => {
-    expect(component.formErrors).toBeTruthy();
-  });
-
-  it('formErrors should have all required properties', () => {
-    const expectedFormErrorsKeys = ['name'];
-
-    expect(Object.keys(component.formErrors)).toEqual(expectedFormErrorsKeys);
-  });
-
-  it('formErrors should not initialy contain any error messages', () => {
-    Object.keys(component.formErrors).forEach(element => {
-      expect(component.formErrors[element]).toEqual('', `'{element}' should be empty`);
-    });
-  });
-
-  it('should load data for teamModel from sevice', () => {
-    expect(component.teamModel.name).toEqual('TeamName', 'teamModel.name shoud have value TeamName');
-  });
-
-  describe('nextStep()', () => {
-
-    it('should navigate to Player', () => {
-      component.nextStep();
-
-      expect(routerStub.navigate).toHaveBeenCalledWith(['lol', { outlets: { 'form-wizzard': 'player' } }]);
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TeamComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
     });
 
-    it('should pass component.teamModel to registrationInformationService.updateTeam', () => {
-      let modelService: FakeRegistrationInformationService = fixture.debugElement.injector.get(RegistrationInformationService);
-      modelService.updateTeam = jasmine.createSpy('updateTeam');
-
-      component.nextStep();
-
-      expect(modelService.updateTeam).toHaveBeenCalledWith(component.teamModel);
-    });
-  });
-
-  // TODO unit test validation messages
-  describe('Form', () => {
-    it('shoud create teamForm', () => {
-      expect(component.teamForm instanceof FormGroup).toBe(true);
+    it('should create', () => {
+      expect(component).toBeTruthy();
     });
 
-    it('should have all required controls', () => {
-      let expecedControls = ['name'];
+    describe('Form', () => {
+      it('shoud create teamForm', () => {
+        expect(component.teamForm instanceof FormGroup).toBe(true);
+      });
 
-      expect(Object.keys(component.teamForm.controls)).toEqual(expecedControls);
-    });
+      it('should have all required controls', () => {
+        let expecedControls = ['name'];
 
-    it('name should be required', () => {
-      component.teamForm.controls['name'].setValue(undefined);
+        expect(Object.keys(component.teamForm.controls)).toEqual(expecedControls);
+      });
 
-      expect(component.teamForm.controls['name'].hasError('required')).toBe(true, 'shoudl have "required" error');
-      expect(component.teamForm.valid).toBe(false, 'form.valid should be false');
+      it('name should be required', () => {
+        component.teamForm.controls['name'].setValue(undefined);
+
+        expect(component.teamForm.controls['name'].hasError('required')).toBe(true, 'should have "required" error');
+        expect(component.teamForm.valid).toBe(false, 'form.valid should be false');
+      });
     });
   });
 });

@@ -12,15 +12,7 @@ import { RegistrationInformationService } from '../services/registration-informa
   styleUrls: ['./team.component.css']
 })
 export class TeamComponent implements OnInit, IStepComponent {
-  public teamModel: TeamModel;
   public teamForm: FormGroup;
-
-  /**
-   * deteced errors
-   */
-  public formErrors = {
-    'name': '',
-  };
 
   /**
    * Validation messages
@@ -37,8 +29,8 @@ export class TeamComponent implements OnInit, IStepComponent {
   }
 
   ngOnInit(): void {
-    this.teamModel = this.modelService.getTeam();
-    this.buildForm();
+    const teamModel = this.modelService.getTeam();
+    this.buildForm(teamModel);
   }
 
   // TODO REVISIT
@@ -48,39 +40,16 @@ export class TeamComponent implements OnInit, IStepComponent {
 
   public nextStep() {
     if (this.teamForm.valid) {
-      this.modelService.updateTeam(this.teamModel);
+      this.modelService.updateTeam(this.teamForm.value);
       this.router.navigate(['lol', { outlets: { 'form-wizzard': 'player' } }]);
     }
   }
 
-  private buildForm(): void {
+  private buildForm(teamModel: TeamModel): void {
     this.teamForm = this.formBuilder.group({
-      name: [this.teamModel.name,
+      name: [teamModel.name,
       [Validators.required]
       ],
     });
-
-    // this.teamForm.valueChanges.subscribe(data => this.onFormValueChange(data));
-
-    // this.onFormValueChange(); // (re)set validation messages now
   }
-
-  /*private onFormValueChange(data?: any) {
-    if (!this.teamForm) { return; }
-
-    const form = this.teamForm;
-    for (const field in this.formErrors) {
-      // clear previous error message (if any)
-      this.formErrors[field] = '';
-      const control = form.get(field);
-      if (control && control.dirty && !control.valid) {
-        const messages = this.validationMessages[field];
-        for (const key in control.errors) {
-          this.formErrors[field] += messages[key] + ' ';
-        }
-      }
-    }
-
-    this.teamModel = form.value;
-  } */
 }
